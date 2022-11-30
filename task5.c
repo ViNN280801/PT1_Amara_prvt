@@ -5,45 +5,75 @@
 
 #include "constants.h"
 
-void random_fill_boxes_and_trays(unsigned boxes_and_tray[EGG_TRAY_ROWS][EGG_TRAY_COLS][EGG_TRAYS][EGG_STACKS])
+// Заполняет коробку с лотками яиц значениями 0 или 1,
+// где 1 - целое яйцо, 0 - разбитое
+// используется тип 'unsigned' для меньшей затратности на память
+// 'unsined' подрузумевает под собой 'unsigned char', который содержит 1 байт
+// следовательно беззнаковое 8 битное число (от 00000000 до 11111111) или
+// от 1 до 255
+void random_fill_boxes_and_trays(unsigned box[BOX_ROWS][BOX_COLS][TRAY_ROWS][TRAY_COLS])
 {
     srand(time(NULL));
 
-    // Итерация по "строкам" лотка
-    for (int row = 0; row < EGG_TRAY_ROWS; row++)
+    /* Итерация по коробке: */
+    // Итерация по рядам лотков в коробке
+    for (int box_row = 0; box_row < BOX_ROWS; box_row++)
     {
-        // Итерация по "колонкам" лотка
-        for (int col = 0; col < EGG_TRAY_COLS; col++)
+        // Итерация по стопкам лотков в коробке
+        for (int box_col = 0; box_col < BOX_COLS; box_col++)
         {
-            // Итерация по лоткам в коробке
-            for (int tray = 0; tray < EGG_TRAYS; tray++)
+            /* Итерация внутри яичного лотка */
+            // Итерация по рядам лотка
+            for (int tray_row = 0; tray_row < TRAY_ROWS; tray_row++)
             {
-                // Итерация по стопкам в коробке
-                for (int stack = 0; stack < EGG_STACKS; stack++)
+                // Итерация по "колонкам" лотка
+                for (int tray_col = 0; tray_col < TRAY_COLS; tray_col++)
                 {
-                    // Представим битое яйцо 0, целое - 1
-                    boxes_and_tray[row][col][tray][stack] = rand() % 2;
+                    // Такой 'rand()' будет генерировать 0 или 1
+                    box[box_row][box_col][tray_row][tray_col] = rand() % 2;
                 }
             }
+            /* Итерация внутри яичного лотка закончена */
+        }
+    }
+    /* Итерация по коробке закончена */
+}
+
+void print_box_with_egg_trays(unsigned box[BOX_ROWS][BOX_COLS][TRAY_ROWS][TRAY_COLS])
+{
+    for (int box_row = 0; box_row < BOX_ROWS; box_row++)
+    {
+        for (int box_col = 0; box_col < BOX_COLS; box_col++)
+        {
+            for (int tray_row = 0; tray_row < TRAY_ROWS; tray_row++)
+            {
+                for (int tray_col = 0; tray_col < TRAY_COLS; tray_col++)
+                {
+                    printf("%u ", box[box_row][box_col][tray_row][tray_col]);
+                }
+                printf("\t");
+            }
+            printf("\n");
         }
     }
 }
 
-double percentage_of_broken_eggs(unsigned boxes_and_tray[EGG_TRAY_ROWS][EGG_TRAY_COLS][EGG_TRAYS][EGG_STACKS])
+// Вычисляет и возвращает процент разбитых яиц
+double percentage_of_broken_eggs(unsigned box[BOX_ROWS][BOX_COLS][TRAY_ROWS][TRAY_COLS])
 {
     // Количество разбитых яиц
     int count = 0;
 
-    for (int row = 0; row < EGG_TRAY_ROWS; row++)
+    for (int box_row = 0; box_row < BOX_ROWS; box_row++)
     {
-        for (int col = 0; col < EGG_TRAY_COLS; col++)
+        for (int box_col = 0; box_col < BOX_COLS; box_col++)
         {
-            for (int tray = 0; tray < EGG_TRAYS; tray++)
+            for (int tray_row = 0; tray_row < TRAY_ROWS; tray_row++)
             {
-                for (int stack = 0; stack < EGG_STACKS; stack++)
+                for (int tray_col = 0; tray_col < TRAY_COLS; tray_col++)
                 {
                     // Если яйцо разбито, увеличиваем переменную 'count'
-                    if (boxes_and_tray[row][col][tray][stack] == 0)
+                    if (box[box_row][box_col][tray_row][tray_col] == 0)
                         count++;
                 }
             }
@@ -53,30 +83,44 @@ double percentage_of_broken_eggs(unsigned boxes_and_tray[EGG_TRAY_ROWS][EGG_TRAY
     return (((double)count * 100.0) / EGG_COUNT_IN_ONE_BOX);
 }
 
+// Печатает индексы разбитых яиц с поясненими
+void print_indeces_of_broken_eggs(unsigned box[BOX_ROWS][BOX_COLS][TRAY_ROWS][TRAY_COLS])
+{
+    printf("Битые яйца находятся по следующим индексам:\n");
+    for (int box_row = 0; box_row < BOX_ROWS; box_row++)
+    {
+        for (int box_col = 0; box_col < BOX_COLS; box_col++)
+        {
+            for (int tray_row = 0; tray_row < TRAY_ROWS; tray_row++)
+            {
+                for (int tray_col = 0; tray_col < TRAY_COLS; tray_col++)
+                {
+                    // Если разбитое, выводим соответсвующее сообщение
+                    if (box[box_row][box_col][tray_row][tray_col] == 0)
+                    {
+                        printf("Ряд №%d\t\tСтопка №%d\nРяд лотка №%d\tКолонка лотка №%d\n",
+                               box_row, box_col, tray_row, tray_col);
+                    }
+                }
+                printf("\n");
+            }
+        }
+    }
+}
+
+void perform_task5()
+{
+    unsigned box[BOX_ROWS][BOX_COLS][TRAY_ROWS][TRAY_COLS];
+    random_fill_boxes_and_trays(box);
+    print_box_with_egg_trays(box);
+    printf("Процент разбитых яиц = %0.2f%%\n", percentage_of_broken_eggs(box));
+    print_indeces_of_broken_eggs(box);
+}
+
 int main()
 {
     setlocale(LC_ALL, "rus");
-
-    unsigned boxes_and_tray[EGG_TRAY_ROWS][EGG_TRAY_COLS][EGG_TRAYS][EGG_STACKS];
-    random_fill_boxes_and_trays(boxes_and_tray);
-
-    for (int row = 0; row < EGG_TRAY_ROWS; row++)
-    {
-        for (int col = 0; col < EGG_TRAY_COLS; col++)
-        {
-            for (int tray = 0; tray < EGG_TRAYS; tray++)
-            {
-                for (int stack = 0; stack < EGG_STACKS; stack++)
-                {
-                    printf("%u ", boxes_and_tray[row][col][tray][stack]);
-                }
-                printf("\t");
-            }
-            printf("\n");
-        }
-    }
-
-    printf("Процент разбитых яиц = %0.2f%%\n", percentage_of_broken_eggs(boxes_and_tray));
+    perform_task5();
 
     return 0;
 }
