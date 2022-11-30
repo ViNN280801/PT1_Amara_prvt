@@ -14,5 +14,7 @@
 // Task 5
 #define EGG_TRAY_ROWS 5
 #define EGG_TRAY_COLS 6
-#define BOX_STACKS 2
-#define BOX_TRAYS 6
+#define EGG_TRAYS 6
+#define EGG_STACKS 2
+
+#define EGG_COUNT_IN_ONE_BOX (EGG_TRAY_ROWS * EGG_TRAY_COLS * EGG_TRAYS * EGG_STACKS)
