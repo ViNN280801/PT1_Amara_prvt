@@ -12,9 +12,11 @@
 #define MATRIX_B_COLS 8
 
 // Task 5
-#define EGG_TRAY_ROWS 5
-#define EGG_TRAY_COLS 6
-#define EGG_TRAYS 6
-#define EGG_STACKS 2
 
-#define EGG_COUNT_IN_ONE_BOX (EGG_TRAY_ROWS * EGG_TRAY_COLS * EGG_TRAYS * EGG_STACKS)
+// Ряды лотков в коробке -> Стопки лотков в коробке -> Ряды яичного лотка -> "Колонки" яичного лотка
+#define BOX_ROWS 2
+#define BOX_COLS 6
+#define TRAY_ROWS 5
+#define TRAY_COLS 6
+
+#define EGG_COUNT_IN_ONE_BOX (BOX_ROWS * BOX_COLS * TRAY_ROWS * TRAY_COLS)
